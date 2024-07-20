@@ -4,7 +4,7 @@
   "description": "image processing csv api",
   "main": "index.js",
   "scripts": {
-    "dev": "pm2-dev src/index.js",
+    "dev": "nodemon src/index.js",
     "prod:start": "pm2 start src/index.js --name csv-api",
     "prod:stop": "pm2 stop csv-api",
     "prod:clean": "pm2 delete csv-api",
@@ -14,7 +14,8 @@
   "license": "ISC",
   "dependencies": {
     "@aws-sdk/client-s3": "^3.614.0",
-    "bullmq": "^5.9.0",
+    "@upstash/redis": "^1.33.0",
+    "bullmq": "^5.10.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
@@ -27,10 +28,13 @@
     "mongoose": "^8.5.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "nanoid": "^5.0.7",
+    "nanoid": "^3.3.7",
     "pm2": "^5.4.2",
     "sharp": "^0.33.4",
     "winston": "^3.13.1",
     "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
   }
 }

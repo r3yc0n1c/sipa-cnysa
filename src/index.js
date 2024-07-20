@@ -1,17 +1,16 @@
-const mongoose = require("mongoose");
-
-const app = require("./app");
 const config = require("./config/config");
 const logger = require("./config/logger");
 
-let server;
+const connectDB = require("./config/mongoose");
+const app = require("./app");
 
-mongoose.connect(config.mongoose.url, config.mongoose.options).then(() => {
-	logger.info("Connected to MongoDB");
-	server = app.listen(config.port, () => {
-		logger.info(`Listening to port ${config.port}`);
-	});
-});
+// connect to mongoDB
+connectDB();
+
+// listen to requests
+const server = app.listen(config.port, () =>
+	logger.info(`Express Server started on port ${config.port}`),
+);
 
 const exitHandler = () => {
 	if (server) {

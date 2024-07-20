@@ -35,17 +35,18 @@ app.use(xss());
 app.use(mongoSanitize());
 
 // enable CORS
-app.use(cors());
-app.options("*", cors());
+app.use(cors({ origin: "*" }));
 
 // rate limiter
-app.use(
-	expressRateLimit({
-		windowMs: 15 * 60 * 1000,
-		max: 20,
-		skipSuccessfulRequests: true,
-	}),
-);
+if (config.env === "prod") {
+	app.use(
+		expressRateLimit({
+			windowMs: 15 * 60 * 1000,
+			max: 20,
+			skipSuccessfulRequests: true,
+		}),
+	);
+}
 
 // v1 api routes
 app.use("/api/v1", routes);
