@@ -9,7 +9,7 @@ const RequestSchema = new mongoose.Schema(
 		},
 		status: {
 			type: String,
-			enum: ["pending", "completed", "rejected"],
+			enum: ["pending", "completed", "failed"],
 			default: "pending",
 		},
 	},

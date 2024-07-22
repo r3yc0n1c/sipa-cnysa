@@ -1,9 +1,8 @@
 const express = require("express");
 
 const upload = require("./upload.route");
-// const statusController = require('../../controllers/status');
-// const webhookController = require("../../controllers/webhook");
-// const downloadController = require("../../controllers/download");
+const webhook = require("./webhook.route");
+const status = require("./status.route");
 
 const router = express.Router();
 
@@ -12,5 +11,7 @@ router.get("/", (req, res) => res.json({ test: "server is serving..." }));
 
 // handle uploads
 router.use("/upload", upload);
+router.use("/webhook", webhook);
+router.use("/status", status);
 
 module.exports = router;

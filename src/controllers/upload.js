@@ -4,7 +4,7 @@ const fastCSV = require("fast-csv");
 const logger = require("../config/logger");
 const Product = require("../models/Product");
 const Request = require("../models/Request");
-const { redis, queue } = require("../config/bullmq");
+const queue = require("../config/queue");
 
 const CSV_HEADERS = ["S. No.", "Product Name", "Input Image Urls"];
 
@@ -56,20 +56,35 @@ const uploadController = async (req, res) => {
 				// create request and generate requestId
 				const newRequest = await Request.create({});
 				const requestId = newRequest.requestId;
+				const { webhookURL } = req.body;
 
 				// save products
 				for (const row of rowData) {
+					const inputImageURLs = row[CSV_HEADERS[2]]
+						.split(", ")
+						.map((url) => url.trim());
+
 					const newProduct = await Product.create({
 						requestId,
+						inputImageURLs,
 						serialNumber: row[CSV_HEADERS[0]],
 						productName: row[CSV_HEADERS[1]],
-						inputImageURLs: row[CSV_HEADERS[2]],
 					});
 
-					// add to processing queue
-					const key = `prod:${newProduct._id}:req:${requestId}`;
-					redis.set(key, input_img_urls.length);
-					await  .add("image-proc", { requestId });
+					const productId = newProduct._id;
+
+					// for (const url of urls) {
+					// 	const jobData = { requestId, productId, url };
+
+					// 	await queue.imagegQueue.add(
+					// 		queue.jobName,
+					// 		jobData,
+					// 		queue.jobOptions,
+					// 	);
+					// }
+
+					const jobData = { requestId, productId, inputImageURLs, webhookURL };
+					await queue.imagegQueue.add(queue.jobName, jobData, queue.jobOptions);
 				}
 
 				// del file
@@ -80,7 +95,7 @@ const uploadController = async (req, res) => {
 					message: "File uploaded successfully!",
 				});
 			} catch (err) {
-				csvParser.destroy("mongodb err");
+				csvParser.destroy(err.message);
 			}
 		});
 };

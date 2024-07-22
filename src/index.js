@@ -4,13 +4,15 @@ const logger = require("./config/logger");
 const connectDB = require("./config/mongoose");
 const app = require("./app");
 
-// connect to mongoDB
-connectDB();
+let server;
 
-// listen to requests
-const server = app.listen(config.port, () =>
-	logger.info(`Express Server started on port ${config.port}`),
-);
+// connect to mongoDB
+connectDB().on("open", () => {
+	// start server
+	server = app.listen(config.port, () =>
+		logger.info(`Express Server started on port ${config.port}`),
+	);
+});
 
 const exitHandler = () => {
 	if (server) {

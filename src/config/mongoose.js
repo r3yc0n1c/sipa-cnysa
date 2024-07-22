@@ -3,9 +3,9 @@ const logger = require("./logger");
 const config = require("./config");
 
 // print logs in dev env
-if (config.env === "dev") {
-	mongoose.set("debug", true);
-}
+// if (config.env === "dev") {
+// 	mongoose.set("debug", true);
+// }
 
 // Connect to mongo db
 const connectDB = () => {
